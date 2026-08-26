@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "description": "Pre-Experiment Locked Configuration Template for RiskLoop",
+  "locked_status": false,
+  "config_hash": null,
+  "tasks": {
+    "status": "TBD",
+    "note": "Exact task list and label semantics will be populated following CUAD_v1.json data inspection and sparsity audit."
+  },
+  "splitting": {
+    "split_map_path": "data/splits/contract_split_map.json",
+    "seed": 42,
+    "train_ratio": 0.70,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15
+  },
+  "data_audit": {
+    "min_train_positive_contracts": 25,
+    "min_val_positive_contracts": 8,
+    "min_test_positive_contracts": 8
+  },
+  "preprocessing": {
+    "status": "TBD",
+    "tokenizer_name": "TBD",
+    "max_sequence_length": "TBD",
+    "chunk_stride": "TBD",
+    "span_alignment_rule": "TBD",
+    "positive_example_rule": "TBD",
+    "negative_sampling_policy": "TBD"
+  },
+  "model": {
+    "backbone_name": "TBD",
+    "raw_output_field": "model_score",
+    "calibrate_probabilities": false
+  },
+  "training": {
+    "seeds": [42, 43, 44],
+    "learning_rate": "TBD",
+    "batch_size": "TBD",
+    "num_epochs": "TBD",
+    "optimizer": "TBD",
+    "loss_function": "TBD"
+  },
+  "evaluation": {
+    "primary_metrics": {
+      "status": "TBD"
+    },
+    "decision_thresholds": {
+      "status": "TBD"
+    },
+    "stage_2a_margin": 0.02,
+    "stage_2a_extreme_runs": 2,
+    "stage_2b_veto_margin": 0.005,
+    "stage_2b_extreme_runs": 2
+  }
+}

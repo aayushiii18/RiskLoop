@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data & Models (Strict test/data exclusion)
+data/raw/*
+data/processed/*
+data/splits/*
+!data/**/.gitkeep
+*.jsonl
+*.pt
+*.bin
+*.pth
+*.onnx
+*.safetensors
+checkpoints/
+models/
+runs/
+experiments/output/
+*.log
+
+# Extracted temporary files
+srd_extracted.txt
