@@ -41,6 +41,7 @@ data/raw/*
 data/processed/*
 data/splits/*
 !data/**/.gitkeep
+!data/raw/README.md
 *.jsonl
 *.pt
 *.bin
