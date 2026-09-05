@@ -1,0 +1,71 @@
+{
+  "status": "LOCKED",
+  "split_map_file": "data\\splits\\contract_split_map.json",
+  "split_seed": 42,
+  "total_contracts": 510,
+  "partition_counts": {
+    "train": 357,
+    "val": 76,
+    "test": 77
+  },
+  "leakage_audit": {
+    "has_leakage": false,
+    "errors": []
+  },
+  "selected_tasks": [
+    "Cap On Liability",
+    "Anti-Assignment",
+    "Termination For Convenience"
+  ],
+  "task_audits": {
+    "Cap On Liability": {
+      "risk_dimension": "liability/exposure risk",
+      "train_pos_contracts": 198,
+      "train_neg_contracts": 159,
+      "train_pos_spans": 481,
+      "val_pos_contracts": 39,
+      "val_neg_contracts": 37,
+      "val_pos_spans": 105,
+      "test_pos_contracts": 38,
+      "test_neg_contracts": 39,
+      "test_pos_spans": 86,
+      "passes_train_gate": true,
+      "passes_val_gate": true,
+      "passes_test_gate": true,
+      "passes_post_split_gate": true
+    },
+    "Anti-Assignment": {
+      "risk_dimension": "assignment/transfer restriction risk",
+      "train_pos_contracts": 257,
+      "train_neg_contracts": 100,
+      "train_pos_spans": 437,
+      "val_pos_contracts": 61,
+      "val_neg_contracts": 15,
+      "val_pos_spans": 120,
+      "test_pos_contracts": 56,
+      "test_neg_contracts": 21,
+      "test_pos_spans": 97,
+      "passes_train_gate": true,
+      "passes_val_gate": true,
+      "passes_test_gate": true,
+      "passes_post_split_gate": true
+    },
+    "Termination For Convenience": {
+      "risk_dimension": "termination/exit-right risk",
+      "train_pos_contracts": 123,
+      "train_neg_contracts": 234,
+      "train_pos_spans": 166,
+      "val_pos_contracts": 28,
+      "val_neg_contracts": 48,
+      "val_pos_spans": 39,
+      "test_pos_contracts": 32,
+      "test_neg_contracts": 45,
+      "test_pos_spans": 41,
+      "passes_train_gate": true,
+      "passes_val_gate": true,
+      "passes_test_gate": true,
+      "passes_post_split_gate": true
+    }
+  },
+  "all_tasks_passed_gate": true
+}

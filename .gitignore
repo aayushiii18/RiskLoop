@@ -41,6 +41,7 @@ data/raw/*
 data/processed/*
 data/splits/*
 !data/**/.gitkeep
+!data/splits/contract_split_map.json
 !data/raw/README.md
 *.jsonl
 *.pt
