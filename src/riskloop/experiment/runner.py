@@ -80,3 +80,53 @@ def validate_experiment_isolation(
         raise ExperimentRunnerException(
             f"PRE-FLIGHT HARD-FAIL: Expected 3 Condition B runs, found {len(cond_b_runs)}."
         )
+
+
+def execute_experiment_plan(
+    tasks: List[str] = ["Cap On Liability", "Anti-Assignment", "Termination For Convenience"],
+    seeds: List[int] = [42, 43, 44],
+    train_data_path: str = "data/processed/train_chunks.json",
+    val_data_path: str = "data/processed/val_chunks.json",
+    output_dir: str = "reports/experiments",
+    dry_run: bool = True,
+    use_pretrained: bool = False
+) -> Dict[str, Any]:
+    """Execute complete 12-run experiment matrix (or dry-run verification).
+    
+    SRD Traceability: FR-21, FR-22, FR-23, FR-24
+    """
+    from riskloop.experiment.trainer import SingleRunTrainer, LOCKED_TRAINING_CONFIG
+    
+    str_train = str(train_data_path).lower()
+    str_val = str(val_data_path).lower()
+    from pathlib import Path
+    p_train = Path(train_data_path).name.lower()
+    p_val = Path(val_data_path).name.lower()
+    if p_train == "test_chunks.json" or p_val == "test_chunks.json" or "test_chunks.json" in str_train or "test_chunks.json" in str_val:
+        raise ExperimentRunnerException(
+            "TEST SET ACCESS PROHIBITED: Training runner is strictly forbidden from loading test set data (FR-38)."
+        )
+        
+    run_matrix = generate_12_run_matrix(tasks, seeds)
+    validate_experiment_isolation(LOCKED_TRAINING_CONFIG, LOCKED_TRAINING_CONFIG, run_matrix)
+    
+    results = []
+    for run_info in run_matrix:
+        trainer = SingleRunTrainer(
+            run_info=run_info,
+            train_data_path=train_data_path,
+            val_data_path=val_data_path,
+            output_dir=output_dir,
+            use_pretrained=use_pretrained
+        )
+        res = trainer.train(dry_run=dry_run)
+        results.append(res)
+        
+    return {
+        "status": "SUCCESS",
+        "total_runs": len(results),
+        "dry_run": dry_run,
+        "run_matrix": run_matrix,
+        "results": results
+    }
+
