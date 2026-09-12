@@ -351,7 +351,7 @@ class SingleRunTrainer:
 
         epochs = self.config["num_epochs"]
         grad_accum = self.config["gradient_accumulation_steps"]
-        total_steps = (len(train_loader) // grad_accum) * epochs
+        total_steps = ((len(train_loader) + grad_accum - 1) // grad_accum) * epochs
         warmup_steps = int(total_steps * self.config["warmup_ratio"])
 
         scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=warmup_steps, num_training_steps=total_steps)
