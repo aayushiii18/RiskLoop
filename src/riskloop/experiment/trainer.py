@@ -5,6 +5,7 @@ SRD Traceability: FR-15..FR-16, FR-21..FR-28, NFR-06..NFR-08, NFR-11, NFR-13
 
 import os
 import json
+import warnings
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -434,7 +435,13 @@ class SingleRunTrainer:
 
                 if (step + 1) % grad_accum == 0 or (step + 1) == len(train_loader):
                     scale_before = scaler.get_scale()
-                    scaler.step(optimizer)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings(
+                            "ignore",
+                            message=r"Detected call of `lr_scheduler\.step\(\)` before `optimizer\.step\(\)`\.",
+                            category=UserWarning
+                        )
+                        scaler.step(optimizer)
                     scaler.update()
                     scale_after = scaler.get_scale()
                     optimizer.zero_grad()
