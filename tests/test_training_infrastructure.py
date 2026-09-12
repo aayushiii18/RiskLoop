@@ -11,6 +11,7 @@ from pathlib import Path
 from riskloop.experiment.trainer import (
     SingleRunTrainer,
     evaluate_chunk_span_logits,
+    get_device,
     LOCKED_TRAINING_CONFIG,
     PRIMARY_METRIC_DISCLOSURE
 )
@@ -26,10 +27,10 @@ from riskloop.experiment.runner import (
 def mock_dataset_files(tmp_path_factory):
     """Create lightweight mock train and val chunk JSON files for testing."""
     tmp_dir = tmp_path_factory.mktemp("mock_data")
-    
+
     train_file = tmp_dir / "mock_train_chunks.json"
     val_file = tmp_dir / "mock_val_chunks.json"
-    
+
     # Create 4 synthetic chunks
     mock_chunks = []
     for i in range(4):
@@ -62,35 +63,35 @@ def mock_dataset_files(tmp_path_factory):
             }
         }
         mock_chunks.append(chunk)
-        
+
     with open(train_file, "w", encoding="utf-8") as f:
         json.dump(mock_chunks, f)
-        
+
     with open(val_file, "w", encoding="utf-8") as f:
         json.dump(mock_chunks, f)
-        
+
     return train_file, val_file, tmp_dir
 
 
 def test_12_run_manifest_expansion():
     tasks = ["Cap On Liability", "Anti-Assignment", "Termination For Convenience"]
     seeds = [42, 43, 44]
-    
+
     matrix = generate_12_run_matrix(tasks, seeds)
     assert len(matrix) == 12
-    
+
     cond_a = [r for r in matrix if r["condition"] == "Condition_A"]
     cond_b = [r for r in matrix if r["condition"] == "Condition_B"]
-    
+
     assert len(cond_a) == 9
     assert len(cond_b) == 3
-    
+
     # Check that Condition A maps each task to each seed
     for t in tasks:
         t_runs = [r for r in cond_a if r["task_scope"] == [t]]
         assert len(t_runs) == 3
         assert set(r["seed"] for r in t_runs) == set(seeds)
-        
+
     # Check Condition B covers all 3 tasks across all 3 seeds
     for r in cond_b:
         assert sorted(r["task_scope"]) == sorted(tasks)
@@ -99,14 +100,14 @@ def test_12_run_manifest_expansion():
 
 def test_test_set_access_prohibition(mock_dataset_files):
     train_file, val_file, _ = mock_dataset_files
-    
+
     run_info = {
         "run_id": 1,
         "condition": "Condition_A",
         "task_scope": ["Cap On Liability"],
         "seed": 42
     }
-    
+
     # Attempt to pass a path containing "test"
     with pytest.raises(ExperimentRunnerException) as exc_info:
         SingleRunTrainer(
@@ -116,7 +117,7 @@ def test_test_set_access_prohibition(mock_dataset_files):
             use_pretrained=False
         )
     assert "TEST SET ACCESS PROHIBITED" in str(exc_info.value)
-    
+
     with pytest.raises(ExperimentRunnerException) as exc_info:
         execute_experiment_plan(
             train_data_path=str(train_file),
@@ -128,44 +129,44 @@ def test_test_set_access_prohibition(mock_dataset_files):
 def test_evaluate_chunk_span_logits():
     batch_size = 2
     seq_len = 512
-    
+
     start_logits = torch.zeros(batch_size, seq_len)
     end_logits = torch.zeros(batch_size, seq_len)
     attention_mask = torch.ones(batch_size, seq_len, dtype=torch.long)
-    
+
     # Chunk 0: positive span at token (5, 8)
     start_logits[0, 5] = 4.0
     end_logits[0, 8] = 3.0
     start_logits[0, 0] = 1.0  # CLS
     end_logits[0, 0] = 1.0  # CLS
-    
+
     # Chunk 1: negative / no-answer at CLS (0, 0)
     start_logits[1, 0] = 5.0
     end_logits[1, 0] = 5.0
-    
+
     scores, spans = evaluate_chunk_span_logits(start_logits, end_logits, attention_mask)
-    
+
     assert scores.shape == (2,)
     assert spans.shape == (2, 2)
-    
+
     # Chunk 0 model score: (4.0 + 3.0) - (1.0 + 1.0) = 5.0
     assert pytest.approx(scores[0].item()) == 5.0
     assert tuple(spans[0].tolist()) == (5, 8)
-    
+
     # Chunk 1 model score: max span score - no answer score
     assert tuple(spans[1].tolist()) == (0, 0) or scores[1].item() <= 0.0
 
 
 def test_trainer_forward_loss_and_metrics_condition_a(mock_dataset_files):
     train_file, val_file, tmp_dir = mock_dataset_files
-    
+
     run_info = {
         "run_id": 1,
         "condition": "Condition_A",
         "task_scope": ["Cap On Liability"],
         "seed": 42
     }
-    
+
     trainer = SingleRunTrainer(
         run_info=run_info,
         train_data_path=train_file,
@@ -173,7 +174,7 @@ def test_trainer_forward_loss_and_metrics_condition_a(mock_dataset_files):
         output_dir=tmp_dir / "exp_a",
         use_pretrained=False
     )
-    
+
     res = trainer.train(dry_run=True)
     assert res["status"] == "SUCCESS"
     assert res["dry_run"] is True
@@ -184,14 +185,14 @@ def test_trainer_forward_loss_and_metrics_condition_a(mock_dataset_files):
 
 def test_trainer_forward_loss_and_metrics_condition_b(mock_dataset_files):
     train_file, val_file, tmp_dir = mock_dataset_files
-    
+
     run_info = {
         "run_id": 10,
         "condition": "Condition_B",
         "task_scope": ["Cap On Liability", "Anti-Assignment", "Termination For Convenience"],
         "seed": 42
     }
-    
+
     trainer = SingleRunTrainer(
         run_info=run_info,
         train_data_path=train_file,
@@ -199,7 +200,7 @@ def test_trainer_forward_loss_and_metrics_condition_b(mock_dataset_files):
         output_dir=tmp_dir / "exp_b",
         use_pretrained=False
     )
-    
+
     res = trainer.train(dry_run=True)
     assert res["status"] == "SUCCESS"
     assert res["dry_run"] is True
@@ -212,7 +213,7 @@ def test_trainer_forward_loss_and_metrics_condition_b(mock_dataset_files):
 
 def test_execute_experiment_plan_dry_run(mock_dataset_files):
     train_file, val_file, tmp_dir = mock_dataset_files
-    
+
     plan_res = execute_experiment_plan(
         train_data_path=str(train_file),
         val_data_path=str(val_file),
@@ -220,7 +221,7 @@ def test_execute_experiment_plan_dry_run(mock_dataset_files):
         dry_run=True,
         use_pretrained=False
     )
-    
+
     assert plan_res["status"] == "SUCCESS"
     assert plan_res["total_runs"] == 12
     assert plan_res["dry_run"] is True
@@ -279,4 +280,72 @@ def test_locked_training_config_immutability():
     assert LOCKED_TRAINING_CONFIG["best_epoch_tie_breaker"] == "earlier_epoch"
     assert LOCKED_TRAINING_CONFIG["train_data_path"] == "data/processed/train_chunks.json"
     assert LOCKED_TRAINING_CONFIG["val_data_path"] == "data/processed/val_chunks.json"
+
+
+def test_get_device_selection_and_cpu_fallback(monkeypatch):
+    """Verify get_device() returns CUDA when available and CPU fallback otherwise."""
+    # Test CPU fallback
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
+    dev_cpu = get_device()
+    assert dev_cpu.type == "cpu"
+
+    # Test CUDA selection
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    dev_cuda = get_device()
+    assert dev_cuda.type == "cuda"
+
+
+def test_model_and_tensors_device_placement(mock_dataset_files):
+    """Verify model parameters, input tensors, targets, and losses use the selected device correctly."""
+    train_file, val_file, tmp_dir = mock_dataset_files
+
+    run_info = {
+        "run_id": 1,
+        "condition": "Condition_A",
+        "task_scope": ["Cap On Liability"],
+        "seed": 42
+    }
+
+    trainer = SingleRunTrainer(
+        run_info=run_info,
+        train_data_path=train_file,
+        val_data_path=val_file,
+        output_dir=tmp_dir / "exp_device_test",
+        use_pretrained=False
+    )
+
+    device = get_device()
+    model = trainer._build_model()
+    model.to(device)
+
+    # Verify model parameters are moved to device
+    for param in model.parameters():
+        assert param.device == device
+        break
+
+    train_loader, _ = trainer._build_dataloaders()
+    batch = next(iter(train_loader))
+
+    input_ids = batch["input_ids"].to(device)
+    attention_mask = batch["attention_mask"].to(device)
+    token_type_ids = batch["token_type_ids"].to(device)
+    start_positions = batch["start_positions"].to(device)
+    end_positions = batch["end_positions"].to(device)
+
+    assert input_ids.device == device
+    assert attention_mask.device == device
+    assert token_type_ids.device == device
+    assert start_positions.device == device
+    assert end_positions.device == device
+
+    outputs = model(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+        token_type_ids=token_type_ids,
+        start_positions=start_positions,
+        end_positions=end_positions
+    )
+    assert outputs["loss"].device == device
+    assert outputs["start_logits"].device == device
+    assert outputs["end_logits"].device == device
 
