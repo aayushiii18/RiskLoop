@@ -50,7 +50,8 @@ data/splits/*
 *.onnx
 *.safetensors
 checkpoints/
-models/
+/models/
+!src/riskloop/models/
 runs/
 experiments/output/
 *.log
