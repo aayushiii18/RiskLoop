@@ -375,6 +375,8 @@ class SingleRunTrainer:
                 model.load_state_dict(ckpt["model_state"])
                 optimizer.load_state_dict(ckpt["optimizer_state"])
                 scheduler.load_state_dict(ckpt["scheduler_state"])
+                if "scaler_state" in ckpt:
+                    scaler.load_state_dict(ckpt["scaler_state"])
                 best_val_score = ckpt["best_val_score"]
                 best_epoch = ckpt["best_epoch"]
                 best_metrics = ckpt["best_metrics"]
@@ -431,10 +433,13 @@ class SingleRunTrainer:
                 scaler.scale(loss).backward()
 
                 if (step + 1) % grad_accum == 0 or (step + 1) == len(train_loader):
+                    scale_before = scaler.get_scale()
                     scaler.step(optimizer)
                     scaler.update()
+                    scale_after = scaler.get_scale()
                     optimizer.zero_grad()
-                    scheduler.step()
+                    if scale_after >= scale_before:
+                        scheduler.step()
 
             avg_train_loss = float(running_train_loss / max(1, num_train_batches))
             val_eval = self.evaluate_epoch(model, val_loader, device)
@@ -464,6 +469,7 @@ class SingleRunTrainer:
                 "model_state": model.state_dict(),
                 "optimizer_state": optimizer.state_dict(),
                 "scheduler_state": scheduler.state_dict(),
+                "scaler_state": scaler.state_dict(),
                 "best_val_score": best_val_score,
                 "best_epoch": best_epoch,
                 "best_metrics": best_metrics,
