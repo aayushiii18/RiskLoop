@@ -1,0 +1,315 @@
+{
+  "protocol_reference": "RiskLoop SRD v1.1 Phase 5C Decision Protocol (FR-29..FR-37, NFR-01..NFR-04)",
+  "test_set_isolation_statement": "TEST SET ISOLATION STRICTLY ENFORCED: The test set (data/processed/test_chunks.json) has NOT been opened, loaded, evaluated, or accessed in any way during this decision analysis (FR-38).",
+  "official_12_run_scores": {
+    "run_01": {
+      "run_id": 1,
+      "condition": "Condition_A",
+      "task": "Cap On Liability",
+      "seed": 42,
+      "val_f1": 0.781893
+    },
+    "run_02": {
+      "run_id": 2,
+      "condition": "Condition_A",
+      "task": "Cap On Liability",
+      "seed": 43,
+      "val_f1": 0.812785
+    },
+    "run_03": {
+      "run_id": 3,
+      "condition": "Condition_A",
+      "task": "Cap On Liability",
+      "seed": 44,
+      "val_f1": 0.791837
+    },
+    "run_04": {
+      "run_id": 4,
+      "condition": "Condition_A",
+      "task": "Anti-Assignment",
+      "seed": 42,
+      "val_f1": 0.771831
+    },
+    "run_05": {
+      "run_id": 5,
+      "condition": "Condition_A",
+      "task": "Anti-Assignment",
+      "seed": 43,
+      "val_f1": 0.804665
+    },
+    "run_06": {
+      "run_id": 6,
+      "condition": "Condition_A",
+      "task": "Anti-Assignment",
+      "seed": 44,
+      "val_f1": 0.741333
+    },
+    "run_07": {
+      "run_id": 7,
+      "condition": "Condition_A",
+      "task": "Termination For Convenience",
+      "seed": 42,
+      "val_f1": 0.666667
+    },
+    "run_08": {
+      "run_id": 8,
+      "condition": "Condition_A",
+      "task": "Termination For Convenience",
+      "seed": 43,
+      "val_f1": 0.624113
+    },
+    "run_09": {
+      "run_id": 9,
+      "condition": "Condition_A",
+      "task": "Termination For Convenience",
+      "seed": 44,
+      "val_f1": 0.706767
+    },
+    "run_10": {
+      "run_id": 10,
+      "condition": "Condition_B",
+      "task": "Joint_Model",
+      "seed": 42,
+      "val_f1_by_task": {
+        "Cap On Liability": 0.715328,
+        "Anti-Assignment": 0.710997,
+        "Termination For Convenience": 0.580247
+      },
+      "mean_val_f1": 0.668857
+    },
+    "run_11": {
+      "run_id": 11,
+      "condition": "Condition_B",
+      "task": "Joint_Model",
+      "seed": 43,
+      "val_f1_by_task": {
+        "Cap On Liability": 0.707581,
+        "Anti-Assignment": 0.788406,
+        "Termination For Convenience": 0.583851
+      },
+      "mean_val_f1": 0.693279
+    },
+    "run_12": {
+      "run_id": 12,
+      "condition": "Condition_B",
+      "task": "Joint_Model",
+      "seed": 44,
+      "val_f1_by_task": {
+        "Cap On Liability": 0.638158,
+        "Anti-Assignment": 0.715736,
+        "Termination For Convenience": 0.617284
+      },
+      "mean_val_f1": 0.657059
+    }
+  },
+  "stage1_descriptive_statistics": {
+    "Anti-Assignment": {
+      "Condition_A": {
+        "runs": [
+          0.771831,
+          0.804665,
+          0.741333
+        ],
+        "mean": 0.7726096666666668,
+        "median": 0.771831,
+        "min": 0.741333,
+        "max": 0.804665,
+        "range": 0.06333199999999994
+      },
+      "Condition_B": {
+        "runs": [
+          0.710997,
+          0.788406,
+          0.715736
+        ],
+        "mean": 0.7383796666666668,
+        "median": 0.715736,
+        "min": 0.710997,
+        "max": 0.788406,
+        "range": 0.07740900000000006
+      }
+    },
+    "Cap On Liability": {
+      "Condition_A": {
+        "runs": [
+          0.781893,
+          0.812785,
+          0.791837
+        ],
+        "mean": 0.795505,
+        "median": 0.791837,
+        "min": 0.781893,
+        "max": 0.812785,
+        "range": 0.03089200000000003
+      },
+      "Condition_B": {
+        "runs": [
+          0.715328,
+          0.707581,
+          0.638158
+        ],
+        "mean": 0.6870223333333333,
+        "median": 0.707581,
+        "min": 0.638158,
+        "max": 0.715328,
+        "range": 0.07716999999999996
+      }
+    },
+    "Termination For Convenience": {
+      "Condition_A": {
+        "runs": [
+          0.666667,
+          0.624113,
+          0.706767
+        ],
+        "mean": 0.665849,
+        "median": 0.666667,
+        "min": 0.624113,
+        "max": 0.706767,
+        "range": 0.082654
+      },
+      "Condition_B": {
+        "runs": [
+          0.580247,
+          0.583851,
+          0.617284
+        ],
+        "mean": 0.593794,
+        "median": 0.583851,
+        "min": 0.580247,
+        "max": 0.617284,
+        "range": 0.0370370000000001
+      }
+    }
+  },
+  "stage2a_improvement_evaluations": {
+    "Anti-Assignment": {
+      "median_diff": -0.056095000000000006,
+      "required_margin": 0.02,
+      "median_condition_met": false,
+      "max_a": 0.804665,
+      "b_runs_exceeding_max_a": 0,
+      "required_extreme_count": 2,
+      "extreme_condition_met": false,
+      "stage_2a_adopted": false
+    },
+    "Cap On Liability": {
+      "median_diff": -0.084256,
+      "required_margin": 0.02,
+      "median_condition_met": false,
+      "max_a": 0.812785,
+      "b_runs_exceeding_max_a": 0,
+      "required_extreme_count": 2,
+      "extreme_condition_met": false,
+      "stage_2a_adopted": false
+    },
+    "Termination For Convenience": {
+      "median_diff": -0.082816,
+      "required_margin": 0.02,
+      "median_condition_met": false,
+      "max_a": 0.706767,
+      "b_runs_exceeding_max_a": 0,
+      "required_extreme_count": 2,
+      "extreme_condition_met": false,
+      "stage_2a_adopted": false
+    }
+  },
+  "stage2b_regression_evaluations": {
+    "Anti-Assignment": {
+      "median_regression": 0.056095000000000006,
+      "veto_margin": 0.005,
+      "regression_flagged": true,
+      "min_a": 0.741333,
+      "b_runs_below_min_a": 2,
+      "required_extreme_count": 2,
+      "extreme_veto_condition_met": true,
+      "is_vetoed": true,
+      "is_ambiguous": false
+    },
+    "Cap On Liability": {
+      "median_regression": 0.084256,
+      "veto_margin": 0.005,
+      "regression_flagged": true,
+      "min_a": 0.781893,
+      "b_runs_below_min_a": 3,
+      "required_extreme_count": 2,
+      "extreme_veto_condition_met": true,
+      "is_vetoed": true,
+      "is_ambiguous": false
+    },
+    "Termination For Convenience": {
+      "median_regression": 0.082816,
+      "veto_margin": 0.005,
+      "regression_flagged": true,
+      "min_a": 0.624113,
+      "b_runs_below_min_a": 3,
+      "required_extreme_count": 2,
+      "extreme_veto_condition_met": true,
+      "is_vetoed": true,
+      "is_ambiguous": false
+    }
+  },
+  "joint_architecture_vetoed": true,
+  "veto_reasons": [
+    "Task 'Anti-Assignment' triggered Stage 2B Global Veto: Median regression 0.0561 > 0.005 and 2/3 B runs fell strictly below Min(A) (0.7413).",
+    "Task 'Cap On Liability' triggered Stage 2B Global Veto: Median regression 0.0843 > 0.005 and 3/3 B runs fell strictly below Min(A) (0.7819).",
+    "Task 'Termination For Convenience' triggered Stage 2B Global Veto: Median regression 0.0828 > 0.005 and 3/3 B runs fell strictly below Min(A) (0.6241)."
+  ],
+  "ambiguous_disclosures": [],
+  "final_task_adoptions": {
+    "Anti-Assignment": "Condition_A",
+    "Cap On Liability": "Condition_A",
+    "Termination For Convenience": "Condition_A"
+  },
+  "representative_models": {
+    "Anti-Assignment": {
+      "condition": "Condition_A",
+      "seed": 42,
+      "run_id": 4,
+      "run_name": "run_04",
+      "validation_score": 0.771831,
+      "description": "Condition A representative run for task 'Anti-Assignment' (Median validation seed 42)"
+    },
+    "Cap On Liability": {
+      "condition": "Condition_A",
+      "seed": 44,
+      "run_id": 3,
+      "run_name": "run_03",
+      "validation_score": 0.791837,
+      "description": "Condition A representative run for task 'Cap On Liability' (Median validation seed 44)"
+    },
+    "Termination For Convenience": {
+      "condition": "Condition_A",
+      "seed": 42,
+      "run_id": 7,
+      "run_name": "run_07",
+      "validation_score": 0.666667,
+      "description": "Condition A representative run for task 'Termination For Convenience' (Median validation seed 42)"
+    }
+  },
+  "condition_b_representative_joint_seed_selection": {
+    "selected_b_seed": 43,
+    "b_seed_total_ranks": {
+      "42": 7,
+      "43": 5,
+      "44": 6
+    },
+    "b_seed_per_task_ranks": {
+      "Anti-Assignment": {
+        "43": 1,
+        "44": 2,
+        "42": 3
+      },
+      "Cap On Liability": {
+        "42": 1,
+        "43": 2,
+        "44": 3
+      },
+      "Termination For Convenience": {
+        "44": 1,
+        "43": 2,
+        "42": 3
+      }
+    }
+  }
+}

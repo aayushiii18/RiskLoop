@@ -43,7 +43,7 @@ def evaluate_stage2a_improvement(
     b_runs_exceeding_max_a = [r for r in stats_b["runs"] if r > max_a]
     extreme_count = len(b_runs_exceeding_max_a)
     
-    median_condition = median_diff > margin
+    median_condition = round(median_diff, 6) > margin
     extreme_condition = extreme_count >= min_extreme_count
     
     adopted = median_condition and extreme_condition
@@ -82,7 +82,7 @@ def evaluate_stage2b_regression_veto(
     b_runs_below_min_a = [r for r in stats_b["runs"] if r < min_a]
     below_count = len(b_runs_below_min_a)
     
-    regression_flagged = median_regression > veto_margin
+    regression_flagged = round(median_regression, 6) > veto_margin
     extreme_veto_condition = below_count >= min_extreme_count
     
     is_vetoed = regression_flagged and extreme_veto_condition
