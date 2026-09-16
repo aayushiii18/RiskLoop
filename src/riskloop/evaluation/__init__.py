@@ -15,7 +15,11 @@ from .decision import (
     generate_official_decision_analysis,
     save_decision_analysis_artifact
 )
-from .test_evaluator import TestSetEvaluator, TestSetIsolationException
+from .test_evaluator import (
+    TestSetEvaluator,
+    TestSetIsolationException,
+    validate_phase6_preflight
+)
 
 __all__ = [
     "compute_evaluation_metrics",
@@ -29,5 +33,6 @@ __all__ = [
     "generate_official_decision_analysis",
     "save_decision_analysis_artifact",
     "TestSetEvaluator",
-    "TestSetIsolationException"
+    "TestSetIsolationException",
+    "validate_phase6_preflight"
 ]
