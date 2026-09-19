@@ -1,0 +1,55 @@
+{
+  "protocol_reference": "RiskLoop SRD v1.1 Phase 5C Decision Protocol (FR-29..FR-37, NFR-01..NFR-04)",
+  "commit_head": "19cfaf21dddc0013296a56366e2bbcdb3cc60b4e",
+  "test_set_isolation_statement": "TEST SET ISOLATION STRICTLY ENFORCED: The test set (data/processed/test_chunks.json) has NOT been opened, loaded, evaluated, or accessed in any way during this decision analysis (FR-38).",
+  "test_set_sha256": "44c42d672685d1851efe33e5aecb6f603e1c2e1446b99bc33e985fc64d56d185",
+  "test_set_path": "data/processed/test_chunks.json",
+  "original_checkpoint_status": {
+    "status": "UNAVAILABLE",
+    "statement": "The original representative Phase 5B checkpoint binaries are unavailable. Therefore, a byte-for-byte or weight-for-weight reproduction of the historical Phase 6 test inference is not possible.",
+    "details": "Original representative Phase 5B checkpoints (run_03, run_04, run_07) were output to ephemeral container storage (/kaggle/working/RiskLoop/reports/experiments/run_XX/) and were not persisted to Git or an external artifact repository."
+  },
+  "reproduction_experiment_status": {
+    "status": "PROTOCOL_FAITHFUL_REPRODUCTION",
+    "statement": "The reproduced checkpoints are evaluated separately as a protocol-faithful reproduction experiment and must not be interpreted as the historical Phase 6 test results.",
+    "details": "Protocol-faithful reproduced checkpoints are generated from scratch under identical locked protocol, seeds, and training hyperparameters, and are maintained in isolated run output paths."
+  },
+  "historical_phase5c_decision_summary": {
+    "decision_artifact_reference": "reports/experiments/decision_analysis.json",
+    "joint_architecture_vetoed": true,
+    "final_task_adoptions": {
+      "Anti-Assignment": "Condition_A",
+      "Cap On Liability": "Condition_A",
+      "Termination For Convenience": "Condition_A"
+    },
+    "historical_representative_models": {
+      "Cap On Liability": {
+        "condition": "Condition_A",
+        "task": "Cap On Liability",
+        "run_id": 3,
+        "run_name": "run_03",
+        "seed": 44,
+        "historical_val_f1": 0.791837,
+        "historical_best_epoch": 3
+      },
+      "Anti-Assignment": {
+        "condition": "Condition_A",
+        "task": "Anti-Assignment",
+        "run_id": 4,
+        "run_name": "run_04",
+        "seed": 42,
+        "historical_val_f1": 0.771831,
+        "historical_best_epoch": 2
+      },
+      "Termination For Convenience": {
+        "condition": "Condition_A",
+        "task": "Termination For Convenience",
+        "run_id": 7,
+        "run_name": "run_07",
+        "seed": 42,
+        "historical_val_f1": 0.666667,
+        "historical_best_epoch": 2
+      }
+    }
+  }
+}

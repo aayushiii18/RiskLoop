@@ -186,3 +186,41 @@ def test_official_12_run_decision_analysis_artifact():
     assert b_selection["selected_b_seed"] == 43
     total_ranks = b_selection["b_seed_total_ranks"]
     assert total_ranks.get(43, total_ranks.get("43")) == 5
+
+
+def test_phase6_provenance_artifact(tmp_path):
+    """Verify Phase 6 provenance artifact generation, required quotes, and dataset SHA256."""
+    from riskloop.evaluation import (
+        generate_phase6_provenance_record,
+        save_phase6_provenance_artifact,
+        ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT,
+        REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT,
+        FROZEN_TEST_SET_SHA256
+    )
+
+    provenance = generate_phase6_provenance_record()
+
+    assert provenance["original_checkpoint_status"]["status"] == "UNAVAILABLE"
+    assert provenance["original_checkpoint_status"]["statement"] == ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT
+    assert provenance["reproduction_experiment_status"]["status"] == "PROTOCOL_FAITHFUL_REPRODUCTION"
+    assert provenance["reproduction_experiment_status"]["statement"] == REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT
+    assert provenance["test_set_sha256"] == FROZEN_TEST_SET_SHA256
+    assert provenance["commit_head"] == "19cfaf21dddc0013296a56366e2bbcdb3cc60b4e"
+
+    # Test saving artifacts
+    json_path = tmp_path / "phase6_provenance.json"
+    md_path = tmp_path / "phase6_provenance.md"
+
+    save_phase6_provenance_artifact(output_json_path=str(json_path), output_md_path=str(md_path))
+
+    assert json_path.exists()
+    assert md_path.exists()
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    assert data["test_set_sha256"] == "44c42d672685d1851efe33e5aecb6f603e1c2e1446b99bc33e985fc64d56d185"
+
+    with open(md_path, "r", encoding="utf-8") as f:
+        md_text = f.read()
+    assert ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT in md_text
+    assert REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT in md_text

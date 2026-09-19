@@ -265,3 +265,135 @@ def save_decision_analysis_artifact(
         json.dump(artifact, f, indent=2)
         
     return artifact
+
+
+ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT = (
+    "The original representative Phase 5B checkpoint binaries are unavailable. "
+    "Therefore, a byte-for-byte or weight-for-weight reproduction of the historical Phase 6 test inference is not possible."
+)
+
+REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT = (
+    "The reproduced checkpoints are evaluated separately as a protocol-faithful reproduction experiment "
+    "and must not be interpreted as the historical Phase 6 test results."
+)
+
+FROZEN_TEST_SET_SHA256 = "44c42d672685d1851efe33e5aecb6f603e1c2e1446b99bc33e985fc64d56d185"
+
+
+def generate_phase6_provenance_record() -> Dict[str, Any]:
+    """Generate official Phase 6 experiment provenance and artifact availability record."""
+    return {
+        "protocol_reference": PROTOCOL_REFERENCE,
+        "commit_head": "19cfaf21dddc0013296a56366e2bbcdb3cc60b4e",
+        "test_set_isolation_statement": TEST_SET_ISOLATION_STATEMENT,
+        "test_set_sha256": FROZEN_TEST_SET_SHA256,
+        "test_set_path": "data/processed/test_chunks.json",
+        "original_checkpoint_status": {
+            "status": "UNAVAILABLE",
+            "statement": ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT,
+            "details": (
+                "Original representative Phase 5B checkpoints (run_03, run_04, run_07) were output to ephemeral "
+                "container storage (/kaggle/working/RiskLoop/reports/experiments/run_XX/) and were not persisted "
+                "to Git or an external artifact repository."
+            )
+        },
+        "reproduction_experiment_status": {
+            "status": "PROTOCOL_FAITHFUL_REPRODUCTION",
+            "statement": REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT,
+            "details": (
+                "Protocol-faithful reproduced checkpoints are generated from scratch under identical locked protocol, "
+                "seeds, and training hyperparameters, and are maintained in isolated run output paths."
+            )
+        },
+        "historical_phase5c_decision_summary": {
+            "decision_artifact_reference": "reports/experiments/decision_analysis.json",
+            "joint_architecture_vetoed": True,
+            "final_task_adoptions": {
+                "Anti-Assignment": "Condition_A",
+                "Cap On Liability": "Condition_A",
+                "Termination For Convenience": "Condition_A"
+            },
+            "historical_representative_models": {
+                "Cap On Liability": {
+                    "condition": "Condition_A",
+                    "task": "Cap On Liability",
+                    "run_id": 3,
+                    "run_name": "run_03",
+                    "seed": 44,
+                    "historical_val_f1": 0.791837,
+                    "historical_best_epoch": 3
+                },
+                "Anti-Assignment": {
+                    "condition": "Condition_A",
+                    "task": "Anti-Assignment",
+                    "run_id": 4,
+                    "run_name": "run_04",
+                    "seed": 42,
+                    "historical_val_f1": 0.771831,
+                    "historical_best_epoch": 2
+                },
+                "Termination For Convenience": {
+                    "condition": "Condition_A",
+                    "task": "Termination For Convenience",
+                    "run_id": 7,
+                    "run_name": "run_07",
+                    "seed": 42,
+                    "historical_val_f1": 0.666667,
+                    "historical_best_epoch": 2
+                }
+            }
+        }
+    }
+
+
+def save_phase6_provenance_artifact(
+    output_json_path: str = "reports/experiments/phase6_provenance.json",
+    output_md_path: str = "reports/experiments/phase6_provenance.md"
+) -> Dict[str, Any]:
+    """Save Phase 6 provenance record to JSON and Markdown artifacts."""
+    artifact = generate_phase6_provenance_record()
+
+    out_json = Path(output_json_path)
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(out_json, "w", encoding="utf-8") as f:
+        json.dump(artifact, f, indent=2)
+
+    out_md = Path(output_md_path)
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+
+    md_content = (
+        f"# RiskLoop Phase 6 Experiment Provenance & Artifact Record\n\n"
+        f"**Commit HEAD:** `{artifact['commit_head']}`\n"
+        f"**Protocol Reference:** {artifact['protocol_reference']}\n"
+        f"**Test Set Path:** `{artifact['test_set_path']}`\n"
+        f"**Test Set SHA256:** `{artifact['test_set_sha256']}`\n\n"
+        f"---\n\n"
+        f"## 1. Original Checkpoint Availability Status\n\n"
+        f"> [!IMPORTANT]\n"
+        f"> {ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT}\n\n"
+        f"* **Availability Status:** `UNAVAILABLE`\n"
+        f"* **Storage Notes:** Original Phase 5B representative model binaries (`run_03`, `run_04`, `run_07`) were output to ephemeral container storage (`/kaggle/working/RiskLoop/reports/experiments/run_XX/`) and were not persisted to Git or an external artifact repository.\n\n"
+        f"---\n\n"
+        f"## 2. Protocol-Faithful Reproduction Status\n\n"
+        f"> [!NOTE]\n"
+        f"> {REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT}\n\n"
+        f"* **Reproduction Status:** `PROTOCOL_FAITHFUL_REPRODUCTION`\n"
+        f"* **Execution Strategy:** Reproduced models are generated from scratch using identical locked training code, seeds, data splits, and hyperparameters, and are saved to isolated output directories.\n\n"
+        f"---\n\n"
+        f"## 3. Historical Phase 5C Validation & Model Selection Results (Preserved)\n\n"
+        f"* **Decision Artifact:** [`reports/experiments/decision_analysis.json`](file:///c:/Users/aayushi/OneDrive/Documents/RiskLoop/reports/experiments/decision_analysis.json)\n"
+        f"* **Joint Architecture Vetoed:** `True` (Condition B triggered Stage 2B global veto across all 3 tasks)\n"
+        f"* **Final Task Adoptions:** All tasks adopted `Condition_A` single-task models.\n\n"
+        f"### Historical Representative Models\n"
+        f"1. **Cap On Liability:** `Condition_A` \\| `run_03` \\| Seed `44` \\| Historical Val F1: `0.791837` (Best Epoch 3)\n"
+        f"2. **Anti-Assignment:** `Condition_A` \\| `run_04` \\| Seed `42` \\| Historical Val F1: `0.771831` (Best Epoch 2)\n"
+        f"3. **Termination For Convenience:** `Condition_A` \\| `run_07` \\| Seed `42` \\| Historical Val F1: `0.666667` (Best Epoch 2)\n\n"
+        f"---\n\n"
+        f"## 4. Test Set Isolation Guarantee\n\n"
+        f"{TEST_SET_ISOLATION_STATEMENT}\n"
+    )
+    with open(out_md, "w", encoding="utf-8") as f:
+        f.write(md_content)
+
+    return artifact

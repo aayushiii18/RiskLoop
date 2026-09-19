@@ -13,7 +13,12 @@ from .selection import (
 )
 from .decision import (
     generate_official_decision_analysis,
-    save_decision_analysis_artifact
+    save_decision_analysis_artifact,
+    generate_phase6_provenance_record,
+    save_phase6_provenance_artifact,
+    ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT,
+    REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT,
+    FROZEN_TEST_SET_SHA256
 )
 from .test_evaluator import (
     TestSetEvaluator,
@@ -32,6 +37,11 @@ __all__ = [
     "execute_representative_model_selection",
     "generate_official_decision_analysis",
     "save_decision_analysis_artifact",
+    "generate_phase6_provenance_record",
+    "save_phase6_provenance_artifact",
+    "ORIGINAL_CHECKPOINT_UNAVAILABLE_STATEMENT",
+    "REPRODUCED_EXPERIMENT_SEPARATE_STATEMENT",
+    "FROZEN_TEST_SET_SHA256",
     "TestSetEvaluator",
     "TestSetIsolationException",
     "validate_phase6_preflight"
