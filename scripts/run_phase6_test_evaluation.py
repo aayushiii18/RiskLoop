@@ -93,7 +93,7 @@ def main():
 
         model = SingleTaskModel(
             model_name="nlpaueb/legal-bert-base-uncased",
-            pretrained=False
+            pretrained=True
         )
         state_dict = torch.load(ckpt_path, map_location=device)
         model.load_state_dict(state_dict)

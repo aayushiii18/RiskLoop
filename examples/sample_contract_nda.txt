@@ -1,0 +1,20 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of October 1, 2024, by and between Company A Inc. ("Disclosing Party") and Company B Corp. ("Receiving Party").
+
+1. CONFIDENTIAL INFORMATION
+"Confidential Information" refers to any proprietary information, technical data, trade secrets, or know-how disclosed by either party to the other party under this Agreement.
+
+2. OBLIGATIONS OF RECEIVING PARTY
+The Receiving Party agrees to hold all Confidential Information in strict confidence and shall not disclose such information to any third party without prior written authorization.
+
+3. ANTI-ASSIGNMENT
+Neither party may assign, transfer, or delegate any of its rights or obligations under this Agreement to any third party without the prior written consent of the non-assigning party, and any attempted assignment without such consent shall be null and void.
+
+4. LIMITATION OF LIABILITY
+Except for breaches of confidentiality or gross negligence, in no event shall either party's total aggregate liability arising out of or related to this Agreement exceed the sum of $50,000 USD.
+
+5. TERMINATION FOR CONVENIENCE
+Either party may terminate this Agreement at any time for convenience, with or without cause, upon providing thirty (30) days prior written notice to the other party.
+
+IN WITNESS WHEREOF, the parties hereto have executed this Agreement as of the date first written above.
