@@ -58,3 +58,7 @@ experiments/output/
 
 # Extracted temporary files
 srd_extracted.txt
+
+# Local workspace scratch
+scratch/
+
